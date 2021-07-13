@@ -48,6 +48,6 @@ do
 			esac
 		done
 	fi
-	mkvmerge -o "$3""$(printf "%02d" $((i+1)))".mkv -S "${f}" --no-audio --no-video --no-chapters "${SUB_SOURCES[i]}"
+	mkvmerge -o "$3""$(printf "%02d" $((i+1)))".mkv -S "${f}" --no-audio --no-video --no-chapters "${SUB_SOURCE[i]}"
 	((i++))
 done
