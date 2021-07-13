@@ -2,7 +2,7 @@
 # Prove two paths and the output-name-prefix as argument. First path is the video-source, second is the subtitle-source. Both paths need same amount of files in mkv-format.
 # Third argument is something like "GOT_S01E" and will end up in "GOT_S01Exx.mkv
 
-set -x
+#set -x
 
 usage() {
     echo "This script replaces subtitles of mkv-files in one folder with subtitles of mkv-files in another folder."
