@@ -2,6 +2,8 @@
 # Prove two paths and the output-name-prefix as argument. First path is the video-source, second is the subtitle-source. Both paths need same amount of files in mkv-format.
 # Third argument is something like "GOT_S01E" and will end up in "GOT_S01Exx.mkv
 
+set -x
+
 usage() {
     echo "This script replaces subtitles of mkv-files in one folder with subtitles of mkv-files in another folder."
 	echo "Input arguments: Path to video-source, path to subtitle-source, Namescheme of output files like GOT_S01E"
@@ -35,8 +37,8 @@ for f in "${VID_SOURCE[@]}"
 do
 	if [ "$all" = false ]; then
 		echo "Replace Subs of ${f##*/} with ${SUB_SOURCE[i]##*/}?"
-		echo "Source $(mkvinfo $f | grep "+ Duration:" | cut -c 5-)"
-		echo "Target $(mkvinfo $SUB_SOURCE[i] | grep "+ Duration:" | cut -c 5-)"
+		echo "Source $(mkvinfo "${f}" | grep "+ Duration:" | cut -c 5-)"
+		echo "Target $(mkvinfo "${SUB_SOURCE[i]}" | grep "+ Duration:" | cut -c 5-)"
 		select opt in yes "yes for all" skip abort; do
 			case $opt in
 				yes )			echo "Creating GOT_S03E0$((i+1)).mkv"; break;;
