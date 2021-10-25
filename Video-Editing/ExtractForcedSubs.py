@@ -17,6 +17,7 @@ import sys
 subNames = ["de.forced.", "en.forced."]
 extReplace = {"vob":"sub", "pgs":"sup"}
 errorLog = ""
+count = 0
 
 if not(os.path.isfile(sys.argv[1]) and sys.argv[1][-3:] == 'csv'):
     print("No/wrong CSV input specified.\nUsage: " + sys.argv[0] + " pathToCsv")
@@ -24,8 +25,10 @@ if not(os.path.isfile(sys.argv[1]) and sys.argv[1][-3:] == 'csv'):
 
 with open(sys.argv[1], newline='') as csvfile:
     reader = csv.DictReader(csvfile, delimiter=';')
+    entries = sum(1 for line in csvfile) - 1
 
     for row in reader:
+        count += 1
         execmd = "mkvextract '" + row['Part File Combined'] + "' tracks"
         if os.path.isfile(row['Part File Combined']):
             z = 0
@@ -33,7 +36,7 @@ with open(sys.argv[1], newline='') as csvfile:
                 execmd += " " + str(int(i)+2) + ":'" + row['Part File Combined'][:-3] + \
                 subNames[z] + extReplace[row['Subtitle Codec'][:3]] + "'"
                 z += 1
-            print("Executing:\n" + execmd)
+            print("[" + count + "/" + entries + "] " + "Executing:\n" + execmd)
             retval = os.system(execmd)
             if retval != 0:
                 errorLog += row['Title'] + "\n"
