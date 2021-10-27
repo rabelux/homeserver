@@ -6,7 +6,7 @@
 #-"Subtitle Codec":     | Currently knows "vobsub" and "pgs". Prbably obsolete with higher mkvextract-version.
 #-"Part File Combined": | Full path incl. filename to mkv-file
 
-#TODO:
+#Possible enhancement:
 #Instead of manually specifying the TrackIDs it's better to parse the mkv-file.
 #see https://gitlab.com/mbunkus/mkvtoolnix/-/wikis/Automation-examples#example-1-multiplex-files-change-audio-language-remove-subtitle-track
 
@@ -20,26 +20,34 @@ errorLog = ""
 count = 0
 
 if not(os.path.isfile(sys.argv[1]) and sys.argv[1][-3:] == 'csv'):
-    print("No/wrong CSV input specified.\nUsage: " + sys.argv[0] + " pathToCsv")
+    print("No/wrong CSV input specified.\nUsage: " + sys.argv[0] + " pathToCsv [-e]")
     exit(1)
+    
+if len(sys.argv) > 2 and sys.argv[2] == "-e":
+    dryrun = False
+else:
+    dryrun = True
+    print("--------DRYRUN--------\nNo changes are being made\nAppend '-e' to execute programm without dryrun\n-----------------------")
 
 with open(sys.argv[1], newline='') as csvfile:
+    entries = sum(1 for line in csvfile if line.rstrip()) - 1
+    csvfile.seek(0) #reset position
     reader = csv.DictReader(csvfile, delimiter=';')
-    entries = sum(1 for line in csvfile) - 1
 
     for row in reader:
         count += 1
         execmd = "mkvextract '" + row['Part File Combined'] + "' tracks"
         if os.path.isfile(row['Part File Combined']):
             z = 0
+            IdOffset = len(row['Audio Languages'].split('-'))
             for i in row['TrackID'].split(','):
-                execmd += " " + str(int(i)+2) + ":'" + row['Part File Combined'][:-3] + \
+                execmd += " " + str(int(i)+IdOffset) + ":'" + row['Part File Combined'][:-3] + \
                 subNames[z] + extReplace[row['Subtitle Codec'][:3]] + "'"
                 z += 1
-            print("[" + count + "/" + entries + "] " + "Executing:\n" + execmd)
-            retval = os.system(execmd)
+            print("[" + str(count) + "/" + str(entries) + "] " + "Executing:\n" + execmd)
+            retval = 0 if dryrun else os.system(execmd)
             if retval != 0:
-                errorLog += row['Title'] + "\n"
+                errorLog += "\t" + row['Title'] + "\n"
         else:
             print ("!!! NOT FOUND: " + row['Title'])
     if errorLog:
