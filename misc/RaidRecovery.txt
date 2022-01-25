@@ -1,0 +1,16 @@
+mdadm -Asf
+
+mount -o ro /dev/md1 /mnt/asustor
+#möglicherweise auch "-o ro,noload" versuchen
+
+
+mdadm --assemble --verbose /dev/md1 /dev/sda4 /dev/sde4 /dev/sdc4
+
+
+Eingegebene Commands:
+mdadm --stop /dev/md1
+mdadm --assemble --verbose --force --run -o /dev/md1 /dev/sda4 /dev/sde4 /dev/sdc4
+	Output:
+	mdadm: forcing event count in /dev/sde4(2) from 6836 upto 21651
+	mdadm: clearing FAULTY flag for device 1 in /dev/md1 for /dev/sde4
+	mdadm: Marking array /dev/md1 as 'clean'
