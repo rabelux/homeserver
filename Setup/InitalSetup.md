@@ -7,4 +7,5 @@
     - 1 GB SWAP
     - 90 GB for data, not mounted
   2. Deselect any packages that should be auto-installed
-2. asd
+2. Add non-free repo to `etc/apt/sources.list` like `bullseye main non-free`
+3. `sudo apt install firmware-realtek firmware-misc-nonfree`
